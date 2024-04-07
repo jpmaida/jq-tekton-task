@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: jq
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/categories: Developer Tools
+    tekton.dev/tags: jq
+    tekton.dev/displayName: "JQ"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    TODO
+  workspaces:
+    - name: source
+      description: A workspace that contains the file which needs to be altered.
+  params:
+    - name: message
+      type: string
+      description: "The message to be printed"
+      default: "Hello, Tekton!"
+    - name: image
+      type: string
+      description: The jq image to use.
+      default: quay.io/jpmaida1/jq@sha256:f90645c017ba8b1a2fff44309231cb7f8fd3a441690e17c15a53e60997f309c0
+  steps:
+    - name: jq-script
+      image: $(params.image)
+      workingDir: $(workspaces.source.path)
+      script: |
+        echo "teste"
