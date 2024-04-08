@@ -15,18 +15,37 @@ spec:
   workspaces:
     - name: source
       description: A workspace that contains the file which needs to be altered.
+      optional: true
   params:
-    - name: message
+    - name: script
       type: string
-      description: "The message to be printed"
-      default: "Hello, Tekton!"
+      description: ""
+      default: "."
     - name: image
       type: string
-      description: The jq image to use.
+      description: "The jq image to use."
       default: quay.io/jpmaida1/jq@sha256:f90645c017ba8b1a2fff44309231cb7f8fd3a441690e17c15a53e60997f309c0
+    - name: input
+      type: string
+      description: ""
+      default: '{\"hello\":\"world\"}'
+    - name: stringOrFile
+      type: string
+      enum: ["string","file"]
+      default: "file"
+  results:
+    - name: jq-script-outcome
+      description: ""
   steps:
     - name: jq-script
       image: $(params.image)
       workingDir: $(workspaces.source.path)
       script: |
-        echo "teste"
+        echo "You submitted as input: $(params.input)"
+        echo "JQ script result:"
+        
+        if [ "string" = "$(params.stringOrFile)" ]; then
+          echo $(params.input) | jq $(params.script) | tee $(results.jq-script-outcome.path)
+        else
+          cat $(params.input) | jq $(params.script) | tee $(results.jq-script-outcome.path)
+        fi
