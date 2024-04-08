@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: new-pipeline
+spec:
+  tasks:
+    - name: jq
+      params:
+        - name: script
+          value: "."
+        - name: input
+          # value: >-
+          #   '{ \
+          #     \"product\": \"Widget\", \
+          #     \"price\": 24.99, \
+          #     \"color\": \"blue\", \
+          #     \"quantity_available\": 50, \
+          #     \"manufacturer\": { \
+          #       \"name\": \"ABC Manufacturing\", \
+          #       \"location\": \"Cityville, USA\" \
+          #     }, \
+          #     \"features\": [\"durable\", \"easy to use\", \"versatile\"], \
+          #     \"dimensions\": { \
+          #       \"length\": 10, \
+          #       \"width\": 5, \
+          #       \"height\": 3 \
+          #     }, \
+          #     \"tags\": [\"gadget\", \"technology\", \"home\"] \
+          #   }'
+          value: '{   \"product\": \"Widget\",   \"price\": 24.99,   \"color\": \"blue\",   \"quantity_available\": 50,   \"manufacturer\": {     \"name\": \"ABC Manufacturing\",     \"location\": \"Cityville, USA\"   },   \"features\": [\"durable\", \"easy to use\", \"versatile\"],   \"dimensions\": {     \"length\": 10,     \"width\": 5,     \"height\": 3   },   \"tags\": [\"gadget\", \"technology\", \"home\"] }'
+      taskRef:
+        kind: Task
+        name: jq
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+  workspaces:
+    - name: shared-workspace
