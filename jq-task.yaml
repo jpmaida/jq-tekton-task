@@ -11,15 +11,15 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    TODO
+    Task built for using the JQ utility in pipelines.
   workspaces:
     - name: source
-      description: A workspace that contains the file which needs to be altered.
+      description: A workspace that contains the file which needs to be altered. It can take the form of a persistent volume (PV and PVC) or configmap.
       optional: true
   params:
     - name: script
       type: string
-      description: ""
+      description: "JQ script that will be executed. If none is provided, the command jq '.' will be executed by default."
       default: "."
     - name: image
       type: string
@@ -27,15 +27,16 @@ spec:
       default: quay.io/jpmaida1/jq@sha256:f90645c017ba8b1a2fff44309231cb7f8fd3a441690e17c15a53e60997f309c0
     - name: input
       type: string
-      description: ""
+      description: "The input to be passed to the JQ command. It can be a JSON string or a file name. It is recommended for large JSON to use file mode. If this parameter is not provided, the default value '{\"hello\":\"world\"}' will be used."
       default: '{\"hello\":\"world\"}'
     - name: stringOrFile
       type: string
       enum: ["string","file"]
       default: "file"
+      description: "Flag used to determine whether the input passed will be a JSON string or file. Use the value 'string' for JSON string or 'file' for file."
   results:
     - name: jq-script-outcome
-      description: ""
+      description: "The result of the JQ script passed as a parameter"
   steps:
     - name: jq-script
       image: $(params.image)
