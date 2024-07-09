@@ -1,12 +1,10 @@
 apiVersion: tekton.dev/v1
 kind: PipelineRun
-metadata:  
+metadata:
   name: new-pipeline
 spec:
   pipelineRef:
     name: new-pipeline
-  taskRunTemplate:
-    serviceAccountName: pipeline
   timeouts:
     pipeline: 1h0m0s
   workspaces:
